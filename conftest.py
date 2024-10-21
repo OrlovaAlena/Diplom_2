@@ -1,6 +1,6 @@
 import pytest
 
-from src.api_requests import create_new_user
+from src.requests_api import create_new_user
 
 
 @pytest.fixture

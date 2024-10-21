@@ -1,7 +1,7 @@
 import allure
 import requests
 
-from src.api_requests import delete_user
+from src.requests_api import delete_user
 from src.data import Data
 from src.endpoints import LOGIN
 
@@ -33,4 +33,3 @@ class TestLogin:
 
         assert response.status_code == 401
         assert response.json()['success'] is False
-

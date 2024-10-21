@@ -1,15 +1,14 @@
-import pytest
 import requests
 
 from src.data import Data
-from src.endpoints import CREATE_USER, USER, INGREDIENTS
+from src.endpoints import CREATE_USER, USER
 from src.helper import generate_random_string
 
 
 def create_new_user():
-    name = generate_random_string()
-    email = generate_random_string() + Data.EMAIL
-    password = generate_random_string()
+    name = generate_random_string(8)
+    email = generate_random_string(7) + Data.EMAIL
+    password = generate_random_string(6)
 
     login_pass = []
 
@@ -31,11 +30,3 @@ def create_new_user():
 
 def delete_user(token):
     return requests.delete(Data.URL+USER, headers={'Authorization': f'{token}'})
-
-
-# def get_ingredients():
-#     ingredients = requests.get(Data.URL + INGREDIENTS)
-#     return ingredients.json()['data']
-#
-#
-

@@ -1,7 +1,7 @@
 import allure
 import requests
 
-from src.api_requests import delete_user
+from src.requests_api import delete_user
 from src.data import Data
 from src.endpoints import LOGIN, USER
 
@@ -24,12 +24,11 @@ class TestUserInfo:
             "name": create_user[2] + '1'
         }
         change_user = requests.patch(Data.URL + USER, data=changed_payload, headers={'Authorization': f'{token}'})
+        delete_user(token)
 
         assert change_user.status_code == 200
         assert change_user.json()['user']['email'] == changed_payload['email']
         assert change_user.json()['user']['name'] == changed_payload['name']
-
-        delete_user(token)
 
     @allure.title('Изменение данных неавторизованного пользователя')
     def test_change_unauthorized_user_data(self, create_user):
@@ -38,8 +37,9 @@ class TestUserInfo:
             "password": create_user[1],
             "name": create_user[2]
         }
+        token = create_user[3]
         change_user_data = requests.patch(Data.URL + USER, data=payload)
+        delete_user(token)
 
         assert change_user_data.status_code == 401
         assert change_user_data.json()['message'] == Data.AUTHORIZE_ERROR
-

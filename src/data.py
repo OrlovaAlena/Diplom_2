@@ -13,3 +13,4 @@ class Data:
     USER_EXISTS = 'User already exists'
     AUTHORIZE_ERROR = 'You should be authorised'
     INGREDIENT_ERROR = 'Ingredient ids must be provided'
+    REGISTER_ERROR = 'Email, password and name are required fields'

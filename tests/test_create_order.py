@@ -1,7 +1,7 @@
 import allure
 import requests
 
-from src.api_requests import delete_user
+from src.requests_api import delete_user
 from src.data import Data
 from src.endpoints import LOGIN, ORDERS
 
@@ -22,11 +22,10 @@ class TestCreateOrder:
             "ingredients": [Data.BUN, Data.FILLING]
         }
         response = requests.post(Data.URL + ORDERS, data=data, headers={'Authorization': f'{token}'})
+        delete_user(token)
 
         assert response.status_code == 200
         assert response.json()['name'] == Data.BURGER_NAME
-
-        delete_user(token)
 
     @allure.title('Создание заказа без авторизации')
     def test_create_order_without_authorization(self):
@@ -46,9 +45,8 @@ class TestCreateOrder:
 
         assert response.status_code == 500
 
-
     @allure.title('Создание заказа без ингредиента')
-    def test_create_order_without_data(self, create_user):
+    def test_create_order_without_data(self):
         data = {
             "ingredients": ""
         }
@@ -70,11 +68,14 @@ class TestCreateOrder:
         data = {
             "ingredients": [Data.BUN]
         }
-        requests.post(Data.URL + ORDERS, data=data, headers={'Authorization': f'{token}'})
-        response = requests.get(Data.URL + ORDERS, headers={'Authorization': f'{token}'})
+        order = requests.post(Data.URL + ORDERS, data=data, headers={'Authorization': f'{token}'})
+        order_num = order.json()['order']['number']
+        get_oder = requests.get(Data.URL + ORDERS, headers={'Authorization': f'{token}'})
+        get_oder_num = get_oder.json()['total']
+        delete_user(token)
 
-        assert response.status_code == 200
-        assert len(response.json()['orders']) == 1
+        assert get_oder.status_code == 200
+        assert order_num == get_oder_num
 
     @allure.title('Получение заказов без авторизции')
     def test_get_orders_unauthorized_user(self):
